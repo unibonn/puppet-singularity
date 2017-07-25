@@ -1,0 +1,15 @@
+{
+  "name": "unibonn-singularity",
+  "version": "0.1.0",
+  "author": "unibonn",
+  "summary": "Puppet module to install and configure Singularity",
+  "license": "GPL-3.0",
+  "source": "https://github.com/unibonn/puppet-singularity",
+  "project_page": "https://github.com/unibonn/puppet-singularity",
+  "issues_url": "https://github.com/unibonn/puppet-singularity/issues",
+  "dependencies": [
+    {"name":"puppetlabs-stdlib","version_requirement":">= 1.0.0"}
+  ],
+  "data_provider": null
+}
+
