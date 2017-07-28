@@ -24,7 +24,7 @@ An example with some custom settings is this:
 
 ```puppet
 class { '::singularity':
-    mount_tmp     => no,
+    mount_tmp     => false,
     container_dir => '/var/singularity',
     bind_path     => [
         {
@@ -40,7 +40,7 @@ class { '::singularity':
     repo_gpgkey   => 'http://yum.example.com/singularity/RPM-GPG-KEY-singularity',
 }
 ```
-Allowed parameters are (decriptions are copied verbatim from the explanations in the [singularity.conf](https://github.com/singularityware/singularity/blob/master/etc/singularity.conf.in) file where applicable):
+Allowed parameters are (descriptions are copied verbatim from the explanations in the [singularity.conf](https://github.com/singularityware/singularity/blob/master/etc/singularity.conf.in) file where applicable):
 
 ##### `allow_setuid`
 Should we allow users to utilize the setuid binary for launching singularity? (default: yes)
