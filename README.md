@@ -8,7 +8,7 @@
 
 ## Description
 
-This puppet module allows to install and configure [singularity](http://singularity.lbl.gov). It relies on the availability of the [Puppetlabs stdlib puppet module](https://github.com/puppetlabs/puppetlabs-stdlib).
+This puppet module allows to install and configure [singularity](http://singularity.lbl.gov). It relies on the availability of the [Puppetlabs stdlib puppet module](https://github.com/puppetlabs/puppetlabs-stdlib). On Debian based operating systems it additionally requires the [Puppetlabs apt puppet module](https://github.com/puppetlabs/puppetlabs-apt).
 
 Unless specified differently, it installs singularity from one of [these openSUSE build service repositories](http://download.opensuse.org/repositories/home:/ubn:/singularity) and sets up the singularity configuration according to the provided settings.
 
@@ -108,8 +108,14 @@ Should we check GPG signature? (default: true)
 ##### `repo_gpgkey`
 Verify using this GPG key. (default: http://build.opensuse.org/projects/home:ubn:singularity/public_key)
 
+##### `repo_gpgkey_id`
+The ID of the GPG key (this is only used on Debian based operating systems) (default: '2CB50B5F357B924430F4680582B1F0EF39E31E24')
+
 ##### `package_ensure`
 Ensure particular package version. (default: 'latest')
 
+##### `package_name`
+Name of the singularity package (default: 'singularity-container' on Debian based operating systems, 'singularity' on other OSes)
+
 ## Limitations
-At present this module only support Redhat systems.
+At present this module only supports Redhat and Debian based operating systems.

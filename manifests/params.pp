@@ -1,6 +1,6 @@
 class singularity::params {
 
-	if ! $facts['os']['family'] == 'RedHat' {
+	if ! $facts['os']['family'] == 'RedHat' and ! $facts['os']['family'] == 'Debian' {
 		fail("singularity: This module does not support OSes of family ${facts['os']['family']}")
 	}
 
@@ -24,9 +24,22 @@ class singularity::params {
 
 	$manage_repo		= true
 	$repo_ensure		= 'present'
-	$repo_url		= "http://download.opensuse.org/repositories/home:/ubn:/singularity/${facts['os']['name']}_${facts['os']['release']['major']}"
+	$obs_os_name		= $facts['os']['name'] ? {
+		'Ubuntu'	=> 'xUbuntu',
+		default		=> $facts['os']['name'],
+	}
+	$obs_os_release		= $facts['os']['name'] ? {
+		'Debian'	=> "${facts['os']['release']['major']}.0",
+		default		=> $facts['os']['release']['major'],
+	}
+	$repo_url		= "http://download.opensuse.org/repositories/home:/ubn:/singularity/${obs_os_name}_${obs_os_release}"
 	$repo_gpgcheck		= true
 	$repo_gpgkey		= 'http://build.opensuse.org/projects/home:ubn:singularity/public_key'
+	$repo_gpgkey_id		= '2CB50B5F357B924430F4680582B1F0EF39E31E24'
 	$package_ensure		= 'latest'
+	$package_name		= $facts['os']['family'] ? {
+		'Debian'	=> 'singularity-container',
+		default		=> 'singularity',
+	}
 
 }
