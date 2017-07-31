@@ -8,9 +8,12 @@
 
 # ALLOW SETUID: [BOOL]
 # DEFAULT: yes
-# Should we allow users to utilize the setuid binary for launching singularity?
-# The majority of features require this to be set to yes, but newer Fedora and
-# Ubuntu kernels can provide limited functionality in unprivileged mode.
+# Should we allow users to utilize the setuid program flow within Singularity?
+# note1: This is the default mode, and to utilize all features, this option
+# will need to be enabled.
+# note2: If this option is disabled, it will rely on the user namespace
+# exclusively which has not been integrated equally between the different
+# Linux distributions.
 <% if scope.lookupvar('::singularity::allow_setuid') -%>
 allow setuid = yes
 <% else -%>
@@ -18,27 +21,23 @@ allow setuid = no
 <% end -%>
 
 
+# MAX LOOP DEVICES: [INT]
+# DEFAULT: 256
+# Set the maximum number of loop devices that Singularity should ever attempt
+# to utilize.
+max loop devices = <%= scope.lookupvar('::singularity::max_loop_devices') %>
+
+
 # ALLOW PID NS: [BOOL]
 # DEFAULT: yes
-# Should we allow users to request the PID namespace?
+# Should we allow users to request the PID namespace? Note that for some HPC
+# resources, the PID namespace may confuse the resource manager and break how
+# some MPI implementations utilize shared memory. (note, on some older
+# systems, the PID namespace is always used)
 <% if scope.lookupvar('::singularity::allow_pid_ns') -%>
 allow pid ns = yes
 <% else -%>
 allow pid ns = no
-<% end -%>
-
-
-# ENABLE OVERLAY: [BOOL]
-# DEFAULT: yes
-# Enabling this option will make it possible to specify bind paths to locations
-# that do not currently exist within the container. Some limitations still exist
-# when running in completely non-privileged mode. (note: this option is only
-# supported on hosts that support overlay file systems).
-# note: currently disabled because RHEL7 kernel crashes with it... :(
-<% if scope.lookupvar('::singularity::enable_overlay') -%>
-enable overlay = yes
-<% else -%>
-enable overlay = no
 <% end -%>
 
 
@@ -56,7 +55,7 @@ config passwd = no
 # CONFIG GROUP: [BOOL]
 # DEFAULT: yes
 # If /etc/group exists within the container, this will automatically append
-# an entry for the calling user.
+# group entries for the calling user.
 <% if scope.lookupvar('::singularity::config_group') -%>
 config group = yes
 <% else -%>
@@ -97,14 +96,18 @@ mount sys = no
 
 # MOUNT DEV: [yes/no/minimal]
 # DEFAULT: yes
-# Shoudl we automatically bind mount /dev within the container? If you select
-# minimal, and if overlay is enabled, then Singularity will attempt to create
-# the following devices inside the container: null, zero, random, urandom
-# note: This requires 'enable overlay = yes'
-<% if scope.lookupvar('::singularity::mount_dev') -%>
+# Should we automatically bind mount /dev within the container? If 'minimal'
+# is chosen, then only 'null', 'zero', 'random', 'urandom', and 'shm' will
+# be included (the same effect as the --contain options)
+<% mount_dev = scope.lookupvar('::singularity::mount_dev') -%>
+<% if !! mount_dev == mount_dev -%>
+<% if mount_dev -%>
 mount dev = yes
 <% else -%>
 mount dev = no
+<% end -%>
+<% else -%>
+mount dev = <%= mount_dev %>
 <% end -%>
 
 
@@ -179,6 +182,17 @@ user bind control = no
 <% end -%>
 
 
+# ENABLE OVERLAY: [BOOL]
+# DEFAULT: yes
+# Enabling this option will make it possible to specify bind paths to locations
+# that do not currently exist within the container.
+<% if scope.lookupvar('::singularity::enable_overlay') -%>
+enable overlay = yes
+<% else -%>
+enable overlay = no
+<% end -%>
+
+
 # MOUNT SLAVE: [BOOL]
 # DEFAULT: yes
 # Should we automatically propagate file-system changes from the host?
@@ -191,20 +205,36 @@ mount slave = no
 <% end -%>
 
 
-# CONTAINER DIR: [STRING]
-# DEFAULT: /var/singularity/mnt
-# This path specifies the location to use for mounting the container, overlays
-# and other necessary file systems for the container. Note, this location
-# absolutely must be local on this host.
-container dir = <%= scope.lookupvar('::singularity::container_dir') %>
+# SESSIONDIR MAXSIZE: [STRING]
+# DEFAULT: 16
+# This specifies how large the default sessiondir should be (in MB) and it will
+# only affect users who use the "--contain" options and don't also specify a
+# location to do default read/writes to (e.g. "--workdir" or "--home").
+sessiondir max size = <%= scope.lookupvar('::singularity::sessiondir_max_size') %>
 
 
-# SESSIONDIR PREFIX: [STRING]
-# DEFAULT: /tmp/.singularity-session-
-# This specifies the prefix for the session directory. Appended to this string
-# is an identification string unique to each user and container. Note, this
-# location absolutely must be local on this host. If the default location of
-# /tmp/ does not work for your system, /var/singularity/sessions maybe a
-# better option.
-#sessiondir prefix = /var/singularity/sessions/
-sessiondir prefix = <%= scope.lookupvar('::singularity::sessiondir_prefix') %>
+# LIMIT CONTAINER OWNERS: [STRING]
+# DEFAULT: NULL
+# Only allow containers to be used that are owned by a given user. If this
+# configuration is undefined (commented or set to NULL), all containers are
+# allowed to be used. This feature only applies when Singularity is running in
+# SUID mode and the user is non-root.
+#limit container owners = gmk, singularity, nobody
+<% limit_container_owners = scope.lookupvar('::singularity::limit_container_owners') -%>
+<% if limit_container_owners -%>
+limit container owners = <%= limit_container_owners.join(', ') %>
+<% end -%>
+
+
+# LIMIT CONTAINER PATHS: [STRING]
+# DEFAULT: NULL
+# Only allow containers to be used that are located within an allowed path
+# prefix. If this configuration is undefined (commented or set to NULL),
+# containers will be allowed to run from anywhere on the file system. This
+# feature only applies when Singularity is running in SUID mode and the user is
+# non-root.
+#limit container paths = /scratch, /tmp, /global
+<% limit_container_paths = scope.lookupvar('::singularity::limit_container_paths') -%>
+<% if limit_container_paths -%>
+limit container paths = <%= limit_container_paths.join(', ') %>
+<% end -%>

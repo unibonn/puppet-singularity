@@ -5,6 +5,7 @@ class singularity::params {
 	}
 
 	$allow_setuid		= true
+	$max_loop_devices	= 256
 	$allow_pid_ns		= true
 	$enable_overlay		= true
 	$config_passwd		= true
@@ -18,9 +19,10 @@ class singularity::params {
 	$mount_hostfs		= false
 	$user_bind_control	= true
 	$mount_slave		= true
-	$container_dir		= '/var/singularity/mnt'
-	$sessiondir_prefix	= '/tmp/.singularity-session-'
+	$sessiondir_max_size	= 16
 	$bind_path		= undef
+	$limit_container_owners	= undef
+	$limit_container_paths	= undef
 
 	$manage_repo		= true
 	$repo_ensure		= 'present'

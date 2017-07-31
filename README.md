@@ -25,7 +25,6 @@ An example with some custom settings is this:
 ```puppet
 class { '::singularity':
     mount_tmp     => false,
-    container_dir => '/var/singularity',
     bind_path     => [
         {
             source      => '/etc/singularity/default-nsswitch.conf',
@@ -44,6 +43,9 @@ Allowed parameters are (descriptions are copied verbatim from the explanations i
 
 ##### `allow_setuid`
 Should we allow users to utilize the setuid binary for launching singularity? (default: yes)
+
+##### `max_loop_devices`
+Set the maximum number of loop devices that Singularity should ever attempt to utilize. (default: 256)
 
 ##### `allow_pid_ns`
 Should we allow users to request the PID namespace? (default: yes)
@@ -84,11 +86,14 @@ Allow users to influence and/or define bind points at runtime? (default: yes)
 ##### `mount_slave`
 Should we automatically propagate file-system changes from the host? (default: yes)
 
-##### `container_dir`
-This path specifies the location to use for mounting the container, overlays and other necessary file systems for the container. (default: /var/singularity/mnt)
+##### `sessiondir_max_size`
+This specifies how large the default sessiondir should be (in MB). (default: 16)
 
-##### `sessiondir_prefix`
-This specifies the prefix for the session directory. (default: /tmp/.singularity-session-)
+##### `limit_container_owners`
+Only allow containers to be used that are owned by users in given array. (default: undef)
+
+##### `limit_container_paths`
+Only allow containers to be used that are located within the given path prefix array. (default: undef)
 
 ##### `bind_path`
 Define a list of files/directories that should be made available from within the container. (default: undef)
