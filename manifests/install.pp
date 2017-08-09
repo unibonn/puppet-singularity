@@ -4,6 +4,7 @@ class singularity::install {
 		if $facts['os']['family'] == 'RedHat' {
 			yumrepo { 'singularity':
 				ensure		=> $singularity::repo_ensure,
+				descr		=> 'Singularity Container',
 				baseurl		=> $singularity::repo_url,
 				gpgcheck	=> $singularity::repo_gpgcheck,
 				gpgkey		=> $singularity::repo_gpgkey,
