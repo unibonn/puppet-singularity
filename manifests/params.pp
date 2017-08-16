@@ -14,6 +14,7 @@ class singularity::params {
 	$mount_proc		= true
 	$mount_sys		= true
 	$mount_dev		= true
+	$mount_devpts		= false
 	$mount_home		= true
 	$mount_tmp		= true
 	$mount_hostfs		= false

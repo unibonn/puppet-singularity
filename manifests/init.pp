@@ -26,6 +26,7 @@ class singularity(
 	Boolean					$mount_proc		= $singularity::params::mount_proc,
 	Boolean					$mount_sys		= $singularity::params::mount_sys,
 	Variant[Boolean, Enum['minimal']]	$mount_dev		= $singularity::params::mount_dev,
+	Boolean					$mount_devpts		= $singularity::params::mount_devpts,
 	Boolean					$mount_home		= $singularity::params::mount_home,
 	Boolean					$mount_tmp		= $singularity::params::mount_tmp,
 	Boolean					$mount_hostfs		= $singularity::params::mount_hostfs,
