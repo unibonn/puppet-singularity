@@ -21,7 +21,7 @@ class singularity::params {
 	$user_bind_control	= true
 	$mount_slave		= true
 	$sessiondir_max_size	= 16
-	$bind_path		= undef
+	$bind_path		= [ '/etc/localtime', '/etc/hosts' ],
 	$limit_container_owners	= undef
 	$limit_container_paths	= undef
 
