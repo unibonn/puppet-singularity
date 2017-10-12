@@ -112,14 +112,11 @@ mount dev = <%= mount_dev %>
 
 
 # MOUNT DEVPTS: [BOOL]
-# DEFAULT: no
+# DEFAULT: yes
 # Should we mount a new instance of devpts if there is a 'minimal'
 # /dev, or -C is passed?  Note, this requires that your kernel was
 # configured with CONFIG_DEVPTS_MULTIPLE_INSTANCES=y, or that you're
-# running kernel 4.7 or newer.  The Default is no, as enabling it on
-# systems without support for multiple devpts instances could result
-# in a shared devpts filesystem, and could potentially make the host
-# system mount of devpts unusable.
+# running kernel 4.7 or newer.
 <% if scope.lookupvar('::singularity::mount_devpts') -%>
 mount devpts = yes
 <% else -%>
@@ -198,10 +195,11 @@ user bind control = no
 <% end -%>
 
 
-# ENABLE OVERLAY: [BOOL]
+# ENABLE OVERLAY: [yes/no/try]
 # DEFAULT: yes
 # Enabling this option will make it possible to specify bind paths to locations
-# that do not currently exist within the container.
+# that do not currently exist within the container.  If 'try' is chosen,
+# overlayfs will be tried but if it is unavailable it will be silently ignored.
 <% if scope.lookupvar('::singularity::enable_overlay') -%>
 enable overlay = yes
 <% else -%>
@@ -253,4 +251,37 @@ limit container owners = <%= limit_container_owners.join(', ') %>
 <% limit_container_paths = scope.lookupvar('::singularity::limit_container_paths') -%>
 <% if limit_container_paths -%>
 limit container paths = <%= limit_container_paths.join(', ') %>
+<% end -%>
+
+
+# ALLOW CONTAINER ${TYPE}: [BOOL]
+# DEFAULT: yes
+# This feature limits what kind of containers that Singularity will allow
+# users to use (note this does not apply for root).
+<% if scope.lookupvar('::singularity::allow_container_squashfs') -%>
+allow container squashfs = yes
+<% else -%>
+allow container squashfs = no
+<% end -%>
+<% if scope.lookupvar('::singularity::allow_container_extfs') -%>
+allow container extfs = yes
+<% else -%>
+allow container extfs = no
+<% end -%>
+<% if scope.lookupvar('::singularity::allow_container_dir') -%>
+allow container dir = yes
+<% else -%>
+allow container dir = no
+<% end -%>
+
+
+# AUTOFS BUG PATH: [STRING]
+# DEFAULT: Undefined
+# Define list of autofs directories which produces "Too many levels of symbolink links"
+# errors when accessed from container (typically bind mounts)
+#autofs bug path = /nfs
+#autofs bug path = /cifs-share
+<% autofs_bug_path = scope.lookupvar('::singularity::autofs_bug_path') -%>
+<% autofs_bug_path.each do |abp| -%>
+autofs bug path = <%= abp %>
 <% end -%>

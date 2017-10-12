@@ -4,26 +4,30 @@ class singularity::params {
 		fail("singularity: This module does not support OSes of family ${facts['os']['family']}")
 	}
 
-	$allow_setuid		= true
-	$max_loop_devices	= 256
-	$allow_pid_ns		= true
-	$enable_overlay		= true
-	$config_passwd		= true
-	$config_group		= true
-	$config_resolv_conf	= true
-	$mount_proc		= true
-	$mount_sys		= true
-	$mount_dev		= true
-	$mount_devpts		= false
-	$mount_home		= true
-	$mount_tmp		= true
-	$mount_hostfs		= false
-	$user_bind_control	= true
-	$mount_slave		= true
-	$sessiondir_max_size	= 16
-	$bind_path		= [ '/etc/localtime', '/etc/hosts' ],
-	$limit_container_owners	= undef
-	$limit_container_paths	= undef
+	$allow_setuid			= true
+	$max_loop_devices		= 256
+	$allow_pid_ns			= true
+	$enable_overlay			= 'try'
+	$config_passwd			= true
+	$config_group			= true
+	$config_resolv_conf		= true
+	$mount_proc			= true
+	$mount_sys			= true
+	$mount_dev			= true
+	$mount_devpts			= true
+	$mount_home			= true
+	$mount_tmp			= true
+	$mount_hostfs			= false
+	$user_bind_control		= true
+	$mount_slave			= true
+	$sessiondir_max_size		= 16
+	$bind_path			= [ '/etc/localtime', '/etc/hosts' ]
+	$limit_container_owners		= undef
+	$limit_container_paths		= undef
+	$allow_container_squashfs	= true
+	$allow_container_extfs		= true
+	$allow_container_dir		= true
+	$autofs_bug_path		= [ ]
 
 	$manage_repo		= true
 	$repo_ensure		= 'present'
