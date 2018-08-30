@@ -8,6 +8,8 @@ class singularity::params {
 	$max_loop_devices		= 256
 	$allow_pid_ns			= true
 	$enable_overlay			= 'try'
+	$with_underlay_patch		= true
+	$enable_underlay		= false
 	$config_passwd			= true
 	$config_group			= true
 	$config_resolv_conf		= true
@@ -23,12 +25,16 @@ class singularity::params {
 	$sessiondir_max_size		= 16
 	$bind_path			= [ '/etc/localtime', '/etc/hosts' ]
 	$limit_container_owners		= undef
+	$limit_container_groups		= undef
 	$limit_container_paths		= undef
 	$allow_container_squashfs	= true
 	$allow_container_extfs		= true
 	$allow_container_dir		= true
 	$autofs_bug_path		= [ ]
+	$memory_fs_type			= 'tmpfs'
+	$always_use_nv			= false
 
+	$use_repo_urls		= false
 	$manage_repo		= true
 	$repo_ensure		= 'present'
 	$obs_os_name		= $facts['os']['name'] ? {
@@ -39,10 +45,10 @@ class singularity::params {
 		'Debian'	=> "${facts['os']['release']['major']}.0",
 		default		=> $facts['os']['release']['major'],
 	}
-	$repo_url		= "http://download.opensuse.org/repositories/home:/ubn:/singularity/${obs_os_name}_${obs_os_release}"
+	$repo_url		= undef
 	$repo_gpgcheck		= true
-	$repo_gpgkey		= 'http://build.opensuse.org/projects/home:ubn:singularity/public_key'
-	$repo_gpgkey_id		= '2CB50B5F357B924430F4680582B1F0EF39E31E24'
+	$repo_gpgkey		= undef
+	$repo_gpgkey_id		= undef
 	$package_ensure		= 'latest'
 	$package_name		= $facts['os']['family'] ? {
 		'Debian'	=> 'singularity-container',

@@ -2,38 +2,47 @@ class singularity::install {
 
 	if $singularity::manage_repo {
 		if $facts['os']['family'] == 'RedHat' {
-			yumrepo { 'singularity':
-				ensure		=> $singularity::repo_ensure,
-				descr		=> 'Singularity Container',
-				baseurl		=> $singularity::repo_url,
-				gpgcheck	=> $singularity::repo_gpgcheck,
-				gpgkey		=> $singularity::repo_gpgkey,
+			if $singularity::use_repo_urls {
+				yumrepo { 'singularity':
+					ensure		=> $singularity::repo_ensure,
+					descr		=> 'Singularity Container',
+					baseurl		=> $singularity::repo_url,
+					gpgcheck	=> $singularity::repo_gpgcheck,
+					gpgkey		=> $singularity::repo_gpgkey,
+				}
+				$pkgrequire = Yumrepo['singularity']
+			} else {
+				ensure_packages(['epel-release'])
+				$pkgrequire = Package['epel-release']
 			}
-		}
-		elsif $facts['os']['family'] == 'Debian' {
+		} elsif $facts['os']['family'] == 'Debian' {
 			if ! defined(Class['::apt']) {
 				fail("${module_name}: You must include the apt class before using the singularity class if manage_repo is true")
 			}
-			apt::source { 'singularity':
-				allow_unsigned	=> $singularity::repo_gpgcheck ? { false => true, true => false },
-				ensure		=> $singularity::repo_ensure,
-				comment		=> 'Singularity Container',
-				location	=> $singularity::repo_url,
-				key		=> {
-					id	=> $singularity::repo_gpgkey_id,
-					source	=> $singularity::repo_gpgkey,
-				},
-				release		=> '/',
-				repos		=> '',
-				notify_update	=> true,
-				require		=> Class['::apt'],
+			if $singularity::use_repo_urls {
+				apt::source { 'singularity':
+					allow_unsigned	=> $singularity::repo_gpgcheck ? { false => true, true => false },
+					ensure		=> $singularity::repo_ensure,
+					comment		=> 'Singularity Container',
+					location	=> $singularity::repo_url,
+					key		=> {
+						id	=> $singularity::repo_gpgkey_id,
+						source	=> $singularity::repo_gpgkey,
+					},
+					release		=> '/',
+					repos		=> '',
+					notify_update	=> true,
+					require		=> Class['::apt'],
+				}
+				$pkgrequire = Apt::Source['singularity']
+			} else {
+				fail('You did not specify "use_repo_urls" which is needed for Debian, giving up!')
 			}
+		} else {
+			$pkgrequire = undef
 		}
-	}
-
-	$pkgrequire = $singularity::manage_repo ? {
-		true	=> $facts['os']['family'] ? { 'RedHat' => Yumrepo['singularity'], 'Debian' => Apt::Source['singularity'] },
-		false	=> undef,
+	} else {
+		$pkgrequire = undef
 	}
 
 	package { $singularity::package_name:

@@ -168,6 +168,7 @@ mount hostfs = no
 # the container. The file or directory must exist within the container on
 # which to attach to. you can specify a different source and destination
 # path (respectively) with a colon; otherwise source and dest are the same.
+# NOTE: these are ignored if singularity is invoked with --contain.
 #bind path = /etc/singularity/default-nsswitch.conf:/etc/nsswitch.conf
 #bind path = /opt
 #bind path = /scratch
@@ -196,14 +197,33 @@ user bind control = no
 
 
 # ENABLE OVERLAY: [yes/no/try]
-# DEFAULT: yes
+# DEFAULT: try
 # Enabling this option will make it possible to specify bind paths to locations
 # that do not currently exist within the container.  If 'try' is chosen,
 # overlayfs will be tried but if it is unavailable it will be silently ignored.
-<% if scope.lookupvar('::singularity::enable_overlay') -%>
+<% enable_overlay = scope.lookupvar('::singularity::enable_overlay') -%>
+<% if !! enable_overlay == enable_overlay -%>
+<% if enable_overlay -%>
 enable overlay = yes
 <% else -%>
 enable overlay = no
+<% end -%>
+<% else -%>
+enable overlay = <%= enable_overlay %>
+<% end -%>
+
+
+<% if scope.lookupvar('::singularity::with_underlay_patch') -%>
+# ENABLE UNDERLAY: [yes/no]
+# DEFAULT: no
+# Enabling this option will make it possible to specify bind paths to locations
+# that do not currently exist within the container, similar to the overlay
+# option.  This will only be used if overlay is not enabled.
+<% if scope.lookupvar('::singularity::enable_underlay') -%>
+enable underlay = yes
+<% else -%>
+enable underlay = no
+<% end -%>
 <% end -%>
 
 
@@ -237,6 +257,19 @@ sessiondir max size = <%= scope.lookupvar('::singularity::sessiondir_max_size') 
 <% limit_container_owners = scope.lookupvar('::singularity::limit_container_owners') -%>
 <% if limit_container_owners -%>
 limit container owners = <%= limit_container_owners.join(', ') %>
+<% end -%>
+
+
+# LIMIT CONTAINER GROUPS: [STRING]
+# DEFAULT: NULL
+# Only allow containers to be used that are owned by a given group. If this
+# configuration is undefined (commented or set to NULL), all containers are
+# allowed to be used. This feature only applies when Singularity is running in
+# SUID mode and the user is non-root.
+#limit container groups = group1, singularity, nobody
+<% limit_container_groups = scope.lookupvar('::singularity::limit_container_groups') -%>
+<% if limit_container_groups -%>
+limit container groups = <%= limit_container_groups.join(', ') %>
 <% end -%>
 
 
@@ -284,4 +317,25 @@ allow container dir = no
 <% autofs_bug_path = scope.lookupvar('::singularity::autofs_bug_path') -%>
 <% autofs_bug_path.each do |abp| -%>
 autofs bug path = <%= abp %>
+<% end -%>
+
+
+# MEMORY FS TYPE: [tmpfs/ramfs]
+# DEFAULT: tmpfs
+# This feature allow to choose temporary filesystem type used by Singularity.
+# Cray CLE 5 and 6 up to CLE 6.0.UP05 there is an issue (kernel panic) when Singularity
+# use tmpfs, so on affected version it's recommended to set this value to ramfs to avoid
+# kernel panic
+memory fs type = <%= scope.lookupvar('::singularity::memory_fs_type') %>
+
+
+# ALWAYS USE NV ${TYPE}: [BOOL]
+# DEFAULT: no
+# This feature allows an administrator to determine that every action command
+# should be executed implicitely with the --nv option (useful for GPU only 
+# environments). 
+<% if scope.lookupvar('::singularity::always_use_nv') -%>
+always use nv = yes
+<% else -%>
+always use nv = no
 <% end -%>
