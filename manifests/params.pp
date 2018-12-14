@@ -49,10 +49,15 @@ class singularity::params {
 	$repo_gpgcheck		= true
 	$repo_gpgkey		= undef
 	$repo_gpgkey_id		= undef
+	$runtime_package_only	= false
 	$package_ensure		= 'latest'
 	$package_name		= $facts['os']['family'] ? {
 		'Debian'	=> 'singularity-container',
 		default		=> 'singularity',
+	}
+	$runtime_package_name	= $facts['os']['family'] ? {
+		'Debian'	=> 'singularity-container',
+		default		=> 'singularity-runtime',
 	}
 
 }

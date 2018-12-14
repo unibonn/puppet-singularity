@@ -36,7 +36,7 @@ class singularity::install {
 				}
 				$pkgrequire = Apt::Source['singularity']
 			} else {
-				fail('You did not specify "use_repo_urls" which is needed for Debian, giving up!')
+				fail("${module_name}: You did not specify 'use_repo_urls' which is needed for Debian, giving up!")
 			}
 		} else {
 			$pkgrequire = undef
@@ -45,9 +45,23 @@ class singularity::install {
 		$pkgrequire = undef
 	}
 
-	package { $singularity::package_name:
-		ensure	=> $singularity::package_ensure,
-		require	=> $pkgrequire,
+	if $singularity::runtime_package_only and $facts['os']['family'] == 'Debian' {
+		fail("${module_name}: runtime only installations are not supported on OSes of the Debian family")
+	} elsif $singularity::runtime_package_only {
+		ensure_packages([$singularity::runtime_package_name],
+				{
+					ensure	=> $singularity::package_ensure,
+                                  	require	=> $pkgrequire,
+				}
+		)
+	}
+	else {
+		ensure_packages([$singularity::package_name],
+				{
+					ensure	=> $singularity::package_ensure,
+				  	require	=> $pkgrequire,
+				}
+		)
 	}
 
 }

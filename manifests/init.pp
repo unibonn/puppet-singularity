@@ -53,8 +53,10 @@ class singularity(
 	Boolean					$repo_gpgcheck		= $singularity::params::repo_gpgcheck,
 	Optional[String]			$repo_gpgkey		= $singularity::params::repo_gpgkey,
 	Optional[String]			$repo_gpgkey_id		= $singularity::params::repo_gpgkey_id,
+	Boolean					$runtime_package_only	= $singularity::params::runtime_package_only,
 	String					$package_ensure		= $singularity::params::package_ensure,
 	String					$package_name		= $singularity::params::package_name,
+	String					$runtime_package_name	= $singularity::params::runtime_package_name,
 ) inherits singularity::params {
 
 	contain singularity::install
