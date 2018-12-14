@@ -54,6 +54,11 @@ class singularity::install {
                                   	require	=> $pkgrequire,
 				}
 		)
+		ensure_packages([$singularity::package_name],
+				{
+					ensure	=> 'absent',
+				}
+		)
 	}
 	else {
 		ensure_packages([$singularity::package_name],
