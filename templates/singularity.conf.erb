@@ -5,28 +5,27 @@
 # what the container is allowed to do on a particular host, and as a result
 # this file must be owned by root.
 
-
 # ALLOW SETUID: [BOOL]
 # DEFAULT: yes
 # Should we allow users to utilize the setuid program flow within Singularity?
 # note1: This is the default mode, and to utilize all features, this option
-# will need to be enabled.
-# note2: If this option is disabled, it will rely on the user namespace
-# exclusively which has not been integrated equally between the different
-# Linux distributions.
+# must be enabled.  For example, without this option loop mounts of image 
+# files will not work; only sandbox image directories, which do not need loop
+# mounts, will work (subject to note 2).
+# note2: If this option is disabled, it will rely on unprivileged user
+# namespaces which have not been integrated equally between different Linux
+# distributions.
 <% if scope.lookupvar('::singularity::allow_setuid') -%>
 allow setuid = yes
 <% else -%>
 allow setuid = no
 <% end -%>
 
-
 # MAX LOOP DEVICES: [INT]
 # DEFAULT: 256
 # Set the maximum number of loop devices that Singularity should ever attempt
 # to utilize.
 max loop devices = <%= scope.lookupvar('::singularity::max_loop_devices') %>
-
 
 # ALLOW PID NS: [BOOL]
 # DEFAULT: yes
@@ -40,7 +39,6 @@ allow pid ns = yes
 allow pid ns = no
 <% end -%>
 
-
 # CONFIG PASSWD: [BOOL]
 # DEFAULT: yes
 # If /etc/passwd exists within the container, this will automatically append
@@ -50,7 +48,6 @@ config passwd = yes
 <% else -%>
 config passwd = no
 <% end -%>
-
 
 # CONFIG GROUP: [BOOL]
 # DEFAULT: yes
@@ -62,7 +59,6 @@ config group = yes
 config group = no
 <% end -%>
 
-
 # CONFIG RESOLV_CONF: [BOOL]
 # DEFAULT: yes
 # If there is a bind point within the container, use the host's
@@ -73,7 +69,6 @@ config resolv_conf = yes
 config resolv_conf = no
 <% end -%>
 
-
 # MOUNT PROC: [BOOL]
 # DEFAULT: yes
 # Should we automatically bind mount /proc within the container?
@@ -83,7 +78,6 @@ mount proc = yes
 mount proc = no
 <% end -%>
 
-
 # MOUNT SYS: [BOOL]
 # DEFAULT: yes
 # Should we automatically bind mount /sys within the container?
@@ -92,7 +86,6 @@ mount sys = yes
 <% else -%>
 mount sys = no
 <% end -%>
-
 
 # MOUNT DEV: [yes/no/minimal]
 # DEFAULT: yes
@@ -110,7 +103,6 @@ mount dev = no
 mount dev = <%= mount_dev %>
 <% end -%>
 
-
 # MOUNT DEVPTS: [BOOL]
 # DEFAULT: yes
 # Should we mount a new instance of devpts if there is a 'minimal'
@@ -122,7 +114,6 @@ mount devpts = yes
 <% else -%>
 mount devpts = no
 <% end -%>
-
 
 # MOUNT HOME: [BOOL]
 # DEFAULT: yes
@@ -137,7 +128,6 @@ mount home = yes
 mount home = no
 <% end -%>
 
-
 # MOUNT TMP: [BOOL]
 # DEFAULT: yes
 # Should we automatically bind mount /tmp and /var/tmp into the container? If
@@ -150,7 +140,6 @@ mount tmp = yes
 mount tmp = no
 <% end -%>
 
-
 # MOUNT HOSTFS: [BOOL]
 # DEFAULT: no
 # Probe for all mounted file systems that are mounted on the host, and bind
@@ -160,7 +149,6 @@ mount hostfs = yes
 <% else -%>
 mount hostfs = no
 <% end -%>
-
 
 # BIND PATH: [STRING]
 # DEFAULT: Undefined
@@ -183,7 +171,6 @@ bind path = <%= bp['source'] %>:<%= bp['destination'] %>
 <% end -%>
 <% end -%>
 
-
 # USER BIND CONTROL: [BOOL]
 # DEFAULT: yes
 # Allow users to influence and/or define bind points at runtime? This will allow
@@ -194,7 +181,6 @@ user bind control = yes
 <% else -%>
 user bind control = no
 <% end -%>
-
 
 # ENABLE OVERLAY: [yes/no/try]
 # DEFAULT: try
@@ -212,20 +198,16 @@ enable overlay = no
 enable overlay = <%= enable_overlay %>
 <% end -%>
 
-
-<% if scope.lookupvar('::singularity::with_underlay_patch') -%>
 # ENABLE UNDERLAY: [yes/no]
-# DEFAULT: no
+# DEFAULT: yes
 # Enabling this option will make it possible to specify bind paths to locations
-# that do not currently exist within the container, similar to the overlay
-# option.  This will only be used if overlay is not enabled.
+# that do not currently exist within the container even if overlay is not
+# working.  If overlay is available, it will be tried first.
 <% if scope.lookupvar('::singularity::enable_underlay') -%>
 enable underlay = yes
 <% else -%>
 enable underlay = no
 <% end -%>
-<% end -%>
-
 
 # MOUNT SLAVE: [BOOL]
 # DEFAULT: yes
@@ -238,14 +220,12 @@ mount slave = yes
 mount slave = no
 <% end -%>
 
-
 # SESSIONDIR MAXSIZE: [STRING]
 # DEFAULT: 16
 # This specifies how large the default sessiondir should be (in MB) and it will
 # only affect users who use the "--contain" options and don't also specify a
 # location to do default read/writes to (e.g. "--workdir" or "--home").
 sessiondir max size = <%= scope.lookupvar('::singularity::sessiondir_max_size') %>
-
 
 # LIMIT CONTAINER OWNERS: [STRING]
 # DEFAULT: NULL
@@ -259,7 +239,6 @@ sessiondir max size = <%= scope.lookupvar('::singularity::sessiondir_max_size') 
 limit container owners = <%= limit_container_owners.join(', ') %>
 <% end -%>
 
-
 # LIMIT CONTAINER GROUPS: [STRING]
 # DEFAULT: NULL
 # Only allow containers to be used that are owned by a given group. If this
@@ -271,7 +250,6 @@ limit container owners = <%= limit_container_owners.join(', ') %>
 <% if limit_container_groups -%>
 limit container groups = <%= limit_container_groups.join(', ') %>
 <% end -%>
-
 
 # LIMIT CONTAINER PATHS: [STRING]
 # DEFAULT: NULL
@@ -285,7 +263,6 @@ limit container groups = <%= limit_container_groups.join(', ') %>
 <% if limit_container_paths -%>
 limit container paths = <%= limit_container_paths.join(', ') %>
 <% end -%>
-
 
 # ALLOW CONTAINER ${TYPE}: [BOOL]
 # DEFAULT: yes
@@ -307,7 +284,6 @@ allow container dir = yes
 allow container dir = no
 <% end -%>
 
-
 # AUTOFS BUG PATH: [STRING]
 # DEFAULT: Undefined
 # Define list of autofs directories which produces "Too many levels of symbolink links"
@@ -319,16 +295,6 @@ allow container dir = no
 autofs bug path = <%= abp %>
 <% end -%>
 
-
-# MEMORY FS TYPE: [tmpfs/ramfs]
-# DEFAULT: tmpfs
-# This feature allow to choose temporary filesystem type used by Singularity.
-# Cray CLE 5 and 6 up to CLE 6.0.UP05 there is an issue (kernel panic) when Singularity
-# use tmpfs, so on affected version it's recommended to set this value to ramfs to avoid
-# kernel panic
-memory fs type = <%= scope.lookupvar('::singularity::memory_fs_type') %>
-
-
 # ALWAYS USE NV ${TYPE}: [BOOL]
 # DEFAULT: no
 # This feature allows an administrator to determine that every action command
@@ -338,4 +304,46 @@ memory fs type = <%= scope.lookupvar('::singularity::memory_fs_type') %>
 always use nv = yes
 <% else -%>
 always use nv = no
+<% end -%>
+
+# ROOT DEFAULT CAPABILITIES: [full/file/no]
+# DEFAULT: no
+# Define default root capability set kept during runtime
+# - full: keep all capabilities (same as --keep-privs)
+# - file: keep capabilities configured in ${prefix}/etc/singularity/capabilities/user.root
+# - no: no capabilities (same as --no-privs)
+root default capabilities = full
+
+# MEMORY FS TYPE: [tmpfs/ramfs]
+# DEFAULT: tmpfs
+# This feature allow to choose temporary filesystem type used by Singularity.
+# Cray CLE 5 and 6 up to CLE 6.0.UP05 there is an issue (kernel panic) when Singularity
+# use tmpfs, so on affected version it's recommended to set this value to ramfs to avoid
+# kernel panic
+memory fs type = <%= scope.lookupvar('::singularity::memory_fs_type') %>
+
+# CNI CONFIGURATION PATH: [STRING]
+# DEFAULT: Undefined
+# Defines path from where CNI configuration files are stored
+#cni configuration path =
+
+# CNI PLUGIN PATH: [STRING]
+# DEFAULT: Undefined
+# Defines path from where CNI executable plugins are stored
+#cni plugin path =
+
+# MKSQUASHFS PATH: [STRING]
+# DEFAULT: Undefined
+# This allows the administrator to specify the location for mksquashfs if it is not
+# installed in a standard system location
+# mksquashfs path =
+
+# SHARED LOOP DEVICES: [BOOL]
+# DEFAULT: no
+# Allow to share same images associated with loop devices to minimize loop
+# usage and optimize kernel cache (useful for MPI)
+<% if scope.lookupvar('::singularity::shared_loop_devs') -%>
+shared loop devices = yes
+<% else -%>
+shared loop devices = no
 <% end -%>

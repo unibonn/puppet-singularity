@@ -20,7 +20,6 @@ class singularity(
 	Integer					$max_loop_devices		= $singularity::params::max_loop_devices,
 	Boolean					$allow_pid_ns			= $singularity::params::allow_pid_ns,
 	Variant[Boolean, Enum['try']]		$enable_overlay			= $singularity::params::enable_overlay,
-	Boolean					$with_underlay_patch		= $singularity::params::with_underlay_patch,
 	Boolean					$enable_underlay		= $singularity::params::enable_underlay,
 	Boolean					$config_passwd			= $singularity::params::config_passwd,
 	Boolean					$config_group			= $singularity::params::config_group,
@@ -45,6 +44,7 @@ class singularity(
 	Optional[Array[Variant[Stdlib::Absolutepath, Hash[Enum['source', 'destination'], Stdlib::Absolutepath]]]]	$bind_path	= $singularity::params::bind_path,
 	Enum['tmpfs', 'ramfs']			$memory_fs_type			= $singularity::params::memory_fs_type,
 	Boolean					$always_use_nv			= $singularity::params::always_use_nv,
+	Boolean					$shared_loop_devs		= $singularity::params::shared_loop_devs,
 
 	Boolean					$use_repo_urls		= $singularity::params::use_repo_urls,
 	Boolean					$manage_repo		= $singularity::params::manage_repo,
@@ -53,10 +53,8 @@ class singularity(
 	Boolean					$repo_gpgcheck		= $singularity::params::repo_gpgcheck,
 	Optional[String]			$repo_gpgkey		= $singularity::params::repo_gpgkey,
 	Optional[String]			$repo_gpgkey_id		= $singularity::params::repo_gpgkey_id,
-	Boolean					$runtime_package_only	= $singularity::params::runtime_package_only,
 	String					$package_ensure		= $singularity::params::package_ensure,
 	String					$package_name		= $singularity::params::package_name,
-	String					$runtime_package_name	= $singularity::params::runtime_package_name,
 ) inherits singularity::params {
 
 	contain singularity::install

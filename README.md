@@ -55,15 +55,10 @@ Should we allow users to request the PID namespace? (default: yes)
 ##### `enable_overlay`
 Enabling this option will make it possible to specify bind paths to locations that do not currently exist within the container. (default: try)
 
-##### `with_underlay_patch`
-Set this to have the module add the parameter to configure the underlay feature.
-This feature is not provided by upstream yet, but part of the [EPEL](https://fedoraproject.org/wiki/EPEL) package.
-The corresponding PR is found [here](https://github.com/singularityware/singularity/pull/1817).
-
 ##### `enable_underlay`
 Enabling this option will make it possible to specify bind paths to locations
-that do not currently exist within the container, similar to the overlay
-option.  This will only be used if overlay is not enabled. (default: no)
+that do not currently exist within the container even if overlay is not
+working.  If overlay is available, it will be tried first. (default: yes)
 
 ##### `config_passwd`
 If /etc/passwd exists within the container, this will automatically append an entry for the calling user. (default: yes)
@@ -119,6 +114,10 @@ Available options are `tmpfs` and `ramfs`.
 
 ##### `always_use_nv`
 Always pass `--nv` option to Singularity implicitly.
+
+##### `shared_loop_devs`
+Allow to share same images associated with loop devices to minimize loop
+usage and optimize kernel cache (useful for MPI). (default: no)
 
 ##### `use_repo_urls`
 Uses provided repository URLs (and gpgkey etc) instead of built-in default (EPEL for now only).

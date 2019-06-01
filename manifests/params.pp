@@ -8,8 +8,7 @@ class singularity::params {
 	$max_loop_devices		= 256
 	$allow_pid_ns			= true
 	$enable_overlay			= 'try'
-	$with_underlay_patch		= true
-	$enable_underlay		= false
+	$enable_underlay		= true
 	$config_passwd			= true
 	$config_group			= true
 	$config_resolv_conf		= true
@@ -33,6 +32,7 @@ class singularity::params {
 	$autofs_bug_path		= [ ]
 	$memory_fs_type			= 'tmpfs'
 	$always_use_nv			= false
+	$shared_loop_devs		= false
 
 	$use_repo_urls		= false
 	$manage_repo		= true
@@ -49,15 +49,10 @@ class singularity::params {
 	$repo_gpgcheck		= true
 	$repo_gpgkey		= undef
 	$repo_gpgkey_id		= undef
-	$runtime_package_only	= false
 	$package_ensure		= 'latest'
 	$package_name		= $facts['os']['family'] ? {
 		'Debian'	=> 'singularity-container',
 		default		=> 'singularity',
-	}
-	$runtime_package_name	= $facts['os']['family'] ? {
-		'Debian'	=> 'singularity-container',
-		default		=> 'singularity-runtime',
 	}
 
 }

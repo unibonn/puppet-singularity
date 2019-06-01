@@ -45,28 +45,11 @@ class singularity::install {
 		$pkgrequire = undef
 	}
 
-	if $singularity::runtime_package_only and $facts['os']['family'] == 'Debian' {
-		fail("${module_name}: runtime only installations are not supported on OSes of the Debian family")
-	} elsif $singularity::runtime_package_only {
-		ensure_packages([$singularity::runtime_package_name],
-				{
-					ensure	=> $singularity::package_ensure,
-                                  	require	=> $pkgrequire,
-				}
-		)
-		ensure_packages([$singularity::package_name],
-				{
-					ensure	=> 'absent',
-				}
-		)
-	}
-	else {
-		ensure_packages([$singularity::package_name],
-				{
-					ensure	=> $singularity::package_ensure,
-				  	require	=> $pkgrequire,
-				}
-		)
-	}
+	ensure_packages([$singularity::package_name],
+			{
+				ensure	=> $singularity::package_ensure,
+				require	=> $pkgrequire,
+			}
+	)
 
 }
