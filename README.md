@@ -163,4 +163,5 @@ Ensure particular package version. (default: 'latest')
 Name of the singularity package (default: 'singularity-container' on Debian based operating systems, 'singularity' on other OSes)
 
 ## Limitations
-At present this module only supports Redhat and Debian based operating systems.
+ - At present this module only supports Redhat and Debian based operating systems.
+ - None of the additional configuration files available with Singularity 3 are supported yet (cgroups, capabilities etc.).
