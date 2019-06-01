@@ -312,7 +312,7 @@ always use nv = no
 # - full: keep all capabilities (same as --keep-privs)
 # - file: keep capabilities configured in ${prefix}/etc/singularity/capabilities/user.root
 # - no: no capabilities (same as --no-privs)
-root default capabilities = full
+root default capabilities = <%= scope.lookupvar('::singularity::root_default_capabilities') %>
 
 # MEMORY FS TYPE: [tmpfs/ramfs]
 # DEFAULT: tmpfs
@@ -325,18 +325,33 @@ memory fs type = <%= scope.lookupvar('::singularity::memory_fs_type') %>
 # CNI CONFIGURATION PATH: [STRING]
 # DEFAULT: Undefined
 # Defines path from where CNI configuration files are stored
+<% cni_config_path = scope.lookupvar('::singularity::cni_config_path') -%>
+<% if cni_config_path -%>
+cni configuration path = <%= cni_config_path %>
+<% else -%>
 #cni configuration path =
+<% end -%>
 
 # CNI PLUGIN PATH: [STRING]
 # DEFAULT: Undefined
 # Defines path from where CNI executable plugins are stored
+<% cni_plugin_path = scope.lookupvar('::singularity::cni_plugin_path') -%>
+<% if cni_plugin_path -%>
+cni plugin path = <%= cni_plugin_path %>
+<% else -%>
 #cni plugin path =
+<% end -%>
 
 # MKSQUASHFS PATH: [STRING]
 # DEFAULT: Undefined
 # This allows the administrator to specify the location for mksquashfs if it is not
 # installed in a standard system location
+<% mksquashfs_path = scope.lookupvar('::singularity::mksquashfs_path') -%>
+<% if mksquashfs_path -%>
+mksquashfs path = <%= mksquashfs_path %>
+<% else -%>
 # mksquashfs path =
+<% end -%>
 
 # SHARED LOOP DEVICES: [BOOL]
 # DEFAULT: no

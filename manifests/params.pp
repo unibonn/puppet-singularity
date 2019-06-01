@@ -30,8 +30,12 @@ class singularity::params {
 	$allow_container_extfs		= true
 	$allow_container_dir		= true
 	$autofs_bug_path		= [ ]
-	$memory_fs_type			= 'tmpfs'
 	$always_use_nv			= false
+	$root_default_capabilities	= 'full'
+	$memory_fs_type			= 'tmpfs'
+	$cni_config_path		= undef
+	$cni_plugin_path		= undef
+	$mksquashfs_path		= undef
 	$shared_loop_devs		= false
 
 	$use_repo_urls		= false

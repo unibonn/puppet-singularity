@@ -108,12 +108,28 @@ Only allow containers to be used that are located within the given path prefix a
 ##### `bind_path`
 Define a list of files/directories that should be made available from within the container. (default: undef)
 
+##### `always_use_nv`
+Always pass `--nv` option to Singularity implicitly.
+
+##### `root_default_capabilities`
+Define default root capability set kept during runtime. (default: full)
+
+  - **full**: keep all capabilities (same as --keep-privs)|
+  - **file**: keep capabilities configured in ${prefix}/etc/singularity/capabilities/user.root
+  - **no**: no capabilities (same as --no-privs)
+
 ##### `memory_fs_type`
 Chooses temporary filesystem used by Singularity.
 Available options are `tmpfs` and `ramfs`.
 
-##### `always_use_nv`
-Always pass `--nv` option to Singularity implicitly.
+##### `cni_config_path`
+Defines path from where CNI configuration files are stored. (default: undef)
+
+##### `cni_plugin_path`
+Defines path from where CNI executable plugins are stored. (default: undef)
+
+##### `mksquashfs_path`
+This allows the administrator to specify the location for mksquashfs if it is not installed in a standard system location. (default: undef)
 
 ##### `shared_loop_devs`
 Allow to share same images associated with loop devices to minimize loop

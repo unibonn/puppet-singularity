@@ -42,8 +42,12 @@ class singularity(
 	Boolean					$allow_container_dir		= $singularity::params::allow_container_dir,
 	Optional[Array[Stdlib::Absolutepath]]	$autofs_bug_path		= $singularity::params::autofs_bug_path,
 	Optional[Array[Variant[Stdlib::Absolutepath, Hash[Enum['source', 'destination'], Stdlib::Absolutepath]]]]	$bind_path	= $singularity::params::bind_path,
-	Enum['tmpfs', 'ramfs']			$memory_fs_type			= $singularity::params::memory_fs_type,
 	Boolean					$always_use_nv			= $singularity::params::always_use_nv,
+	Enum['full','file','no']		$root_default_capabilities	= $singularity::params::root_default_capabilities,
+	Enum['tmpfs', 'ramfs']			$memory_fs_type			= $singularity::params::memory_fs_type,
+	Optional[String]			$cni_config_path		= $singularity::params::cni_config_path,
+	Optional[String]			$cni_plugin_path		= $singularity::params::cni_plugin_path,
+	Optional[String]			$mksquashfs_path		= $singularity::params::mksquashfs_path,
 	Boolean					$shared_loop_devs		= $singularity::params::shared_loop_devs,
 
 	Boolean					$use_repo_urls		= $singularity::params::use_repo_urls,
