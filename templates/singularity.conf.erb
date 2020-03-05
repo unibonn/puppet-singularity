@@ -182,6 +182,16 @@ user bind control = yes
 user bind control = no
 <% end -%>
 
+# ENABLE FUSEMOUNT: [BOOL]
+# DEFAULT: yes
+# Allow users to mount fuse filesystems inside containers with the --fusemount
+# command line option.
+<% if scope.lookupvar('::singularity::enable_fusemount') -%>
+enable fusemount = yes
+<% else -%>
+enable fusemount = no
+<% end -%>
+
 # ENABLE OVERLAY: [yes/no/try]
 # DEFAULT: try
 # Enabling this option will make it possible to specify bind paths to locations
@@ -283,22 +293,16 @@ allow container dir = yes
 <% else -%>
 allow container dir = no
 <% end -%>
-
-# AUTOFS BUG PATH: [STRING]
-# DEFAULT: Undefined
-# Define list of autofs directories which produces "Too many levels of symbolink links"
-# errors when accessed from container (typically bind mounts)
-#autofs bug path = /nfs
-#autofs bug path = /cifs-share
-<% autofs_bug_path = scope.lookupvar('::singularity::autofs_bug_path') -%>
-<% autofs_bug_path.each do |abp| -%>
-autofs bug path = <%= abp %>
+<% if scope.lookupvar('::singularity::allow_container_encrypted') -%>
+allow container encrypted = yes
+<% else -%>
+allow container encrypted = no
 <% end -%>
 
 # ALWAYS USE NV ${TYPE}: [BOOL]
 # DEFAULT: no
 # This feature allows an administrator to determine that every action command
-# should be executed implicitely with the --nv option (useful for GPU only 
+# should be executed implicitly with the --nv option (useful for GPU only 
 # environments). 
 <% if scope.lookupvar('::singularity::always_use_nv') -%>
 always use nv = yes
@@ -306,8 +310,19 @@ always use nv = yes
 always use nv = no
 <% end -%>
 
-# ROOT DEFAULT CAPABILITIES: [full/file/no]
+# ALWAYS USE ROCM ${TYPE}: [BOOL]
 # DEFAULT: no
+# This feature allows an administrator to determine that every action command
+# should be executed implicitly with the --rocm option (useful for GPU only
+# environments).
+<% if scope.lookupvar('::singularity::always_use_rocm') -%>
+always use rocm = yes
+<% else -%>
+always use rocm = no
+<% end -%>
+
+# ROOT DEFAULT CAPABILITIES: [full/file/no]
+# DEFAULT: full
 # Define default root capability set kept during runtime
 # - full: keep all capabilities (same as --keep-privs)
 # - file: keep capabilities configured in ${prefix}/etc/singularity/capabilities/user.root
@@ -351,6 +366,19 @@ cni plugin path = <%= cni_plugin_path %>
 mksquashfs path = <%= mksquashfs_path %>
 <% else -%>
 # mksquashfs path =
+<% end -%>
+
+# CRYPTSETUP PATH: [STRING]
+# DEFAULT: Undefined
+# This allows the administrator to specify the location of cryptsetup if
+# they wish to use custom location for this installation. If this value
+# is undefined, at runtime singularity falls back to the value that was
+# recorded at build time.
+<% cryptsetup_path = scope.lookupvar('::singularity::cryptsetup_path') -%>
+<% if cryptsetup_path -%>
+cryptsetup path = <%= cryptsetup_path %>
+<% else -%>
+# cryptsetup path =
 <% end -%>
 
 # SHARED LOOP DEVICES: [BOOL]

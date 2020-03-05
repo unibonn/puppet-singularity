@@ -87,8 +87,14 @@ Should we automatically bind mount /tmp and /var/tmp into the container? (defaul
 ##### `mount_hostfs`
 Probe for all mounted file systems that are mounted on the host, and bind those into the container? (default: no)
 
+##### `bind_path`
+Define a list of files/directories that should be made available from within the container. (default: [ '/etc/localtime', '/etc/hosts' ])
+
 ##### `user_bind_control`
 Allow users to influence and/or define bind points at runtime? (default: yes)
+
+##### `enable_fusemount`
+Allow users to mount fuse filesystems inside containers with the --fusemount command line option. (default: yes)
 
 ##### `mount_slave`
 Should we automatically propagate file-system changes from the host? (default: yes)
@@ -105,11 +111,11 @@ Only allow containers to be used that are owned by groups in given array. (defau
 ##### `limit_container_paths`
 Only allow containers to be used that are located within the given path prefix array. (default: undef)
 
-##### `bind_path`
-Define a list of files/directories that should be made available from within the container. (default: undef)
-
 ##### `always_use_nv`
 Always pass `--nv` option to Singularity implicitly.
+
+##### `always_use_rocm`
+Always pass `--rocm` option to Singularity implicitly.
 
 ##### `root_default_capabilities`
 Define default root capability set kept during runtime. (default: full)
@@ -130,6 +136,9 @@ Defines path from where CNI executable plugins are stored. (default: undef)
 
 ##### `mksquashfs_path`
 This allows the administrator to specify the location for mksquashfs if it is not installed in a standard system location. (default: undef)
+
+##### `cryptsetup_path`
+This allows the administrator to specify the location for cryptsetup if it is not installed in a standard system location. (default: undef)
 
 ##### `shared_loop_devs`
 Allow to share same images associated with loop devices to minimize loop
