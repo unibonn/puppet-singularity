@@ -156,7 +156,9 @@ mount hostfs = no
 # the container. The file or directory must exist within the container on
 # which to attach to. you can specify a different source and destination
 # path (respectively) with a colon; otherwise source and dest are the same.
-# NOTE: these are ignored if singularity is invoked with --contain.
+# NOTE: these are ignored if singularity is invoked with --contain except
+# for /etc/hosts and /etc/localtime. When invoked with --contain and --net,
+# /etc/hosts would contain a default generated content for localhost resolution.
 #bind path = /etc/singularity/default-nsswitch.conf:/etc/nsswitch.conf
 #bind path = /opt
 #bind path = /scratch
@@ -192,11 +194,12 @@ enable fusemount = yes
 enable fusemount = no
 <% end -%>
 
-# ENABLE OVERLAY: [yes/no/try]
+# ENABLE OVERLAY: [yes/no/try/driver]
 # DEFAULT: try
 # Enabling this option will make it possible to specify bind paths to locations
 # that do not currently exist within the container.  If 'try' is chosen,
 # overlayfs will be tried but if it is unavailable it will be silently ignored.
+# If 'driver' is chosen, overlayfs is handled by the image driver.
 <% enable_overlay = scope.lookupvar('::singularity::enable_overlay') -%>
 <% if !! enable_overlay == enable_overlay -%>
 <% if enable_overlay -%>
@@ -368,6 +371,28 @@ mksquashfs path = <%= mksquashfs_path %>
 # mksquashfs path =
 <% end -%>
 
+# MKSQUASHFS PROCS: [UINT]
+# DEFAULT: 0 (All CPUs)
+# This allows the administrator to specify the number of CPUs for mksquashfs
+# to use when building an image.  The fewer processors the longer it takes.
+# To enable it to use all available CPU's set this to 0.
+# mksquashfs procs = 0
+mksquashfs procs = <%= scope.lookupvar('::singularity::mksquashfs_procs') -%>
+
+# MKSQUASHFS MEM: [STRING]
+# DEFAULT: Unlimited
+# This allows the administrator to set the maximum amount of memory for mkswapfs
+# to use when building an image.  e.g. 1G for 1gb or 500M for 500mb. Restricting memory
+# can have a major impact on the time it takes mksquashfs to create the image.
+# NOTE: This fuctionality did not exist in squashfs-tools prior to version 4.3
+# If using an earlier version you should not set this.
+<% mksquashfs_mem = scope.lookupvar('::singularity::mksquashfs_mem') -%>
+<% if mksquashfs_mem -%>
+mksquashfs mem = <%= mksquashfs_mem %>
+<% else -%>
+# mksquashfs mem = 1G
+<% end -%>
+
 # CRYPTSETUP PATH: [STRING]
 # DEFAULT: Undefined
 # This allows the administrator to specify the location of cryptsetup if
@@ -390,3 +415,13 @@ shared loop devices = yes
 <% else -%>
 shared loop devices = no
 <% end -%>
+
+# IMAGE DRIVER: [STRING]
+# DEFAULT: Undefined
+# This option specifies the name of an image driver provided by a plugin that
+# will be used to handle image mounts. If the 'enable overlay' option is set
+# to 'driver' the driver name specified here will also be used to handle
+# overlay mounts.
+# If the driver name specified has not been registered via a plugin installation
+# the run-time will abort.
+image driver = <%= scope.lookupvar('::singularity::image_driver') -%>

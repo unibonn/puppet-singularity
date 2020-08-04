@@ -53,7 +53,8 @@ Set the maximum number of loop devices that Singularity should ever attempt to u
 Should we allow users to request the PID namespace? (default: yes)
 
 ##### `enable_overlay`
-Enabling this option will make it possible to specify bind paths to locations that do not currently exist within the container. (default: try)
+Enabling this option will make it possible to specify bind paths to locations that do not currently exist within the container. If 'try' is chosen, overlayfs will be tried but if it is unavailable it will be silently ignored.
+If 'driver' is chosen, overlayfs is handled by the image driver. (default: try)
 
 ##### `enable_underlay`
 Enabling this option will make it possible to specify bind paths to locations
@@ -137,12 +138,30 @@ Defines path from where CNI executable plugins are stored. (default: undef)
 ##### `mksquashfs_path`
 This allows the administrator to specify the location for mksquashfs if it is not installed in a standard system location. (default: undef)
 
+##### `mksquashfs_procs`
+This allows the administrator to specify the number of CPUs for mksquashfs
+to use when building an image. (default: 0, which corresponds to all CPUs)
+
+##### `mksquashfs_mem`
+This allows the administrator to set the maximum amount of memory for mkswapfs
+to use when building an image.  e.g. 1G for 1gb or 500M for 500mb.
+NOTE: This fuctionality did not exist in squashfs-tools prior to version 4.3
+If using an earlier version you should not set this. (default: undef)
+
 ##### `cryptsetup_path`
 This allows the administrator to specify the location for cryptsetup if it is not installed in a standard system location. (default: undef)
 
 ##### `shared_loop_devs`
 Allow to share same images associated with loop devices to minimize loop
 usage and optimize kernel cache (useful for MPI). (default: no)
+
+##### `image_driver`
+This option specifies the name of an image driver provided by a plugin that
+will be used to handle image mounts. If the 'enable overlay' option is set
+to 'driver' the driver name specified here will also be used to handle
+overlay mounts.
+If the driver name specified has not been registered via a plugin installation
+the run-time will abort. (default: '')
 
 ##### `use_repo_urls`
 Uses provided repository URLs (and gpgkey etc) instead of built-in default (EPEL for now only).

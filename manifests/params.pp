@@ -38,8 +38,11 @@ class singularity::params {
 	$cni_config_path		= undef
 	$cni_plugin_path		= undef
 	$mksquashfs_path		= undef
+	$mksquashfs_procs		= 0
+	$mksquashfs_mem			= undef
 	$cryptsetup_path		= undef
 	$shared_loop_devs		= false
+	$image_driver			= ''
 
 	$use_repo_urls		= false
 	$manage_repo		= true
