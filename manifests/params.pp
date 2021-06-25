@@ -31,6 +31,9 @@ class singularity::params {
 	$allow_container_extfs		= true
 	$allow_container_dir		= true
 	$allow_container_encrypted	= true
+	$allow_net_users		= undef
+	$allow_net_groups		= undef
+	$allow_net_networks		= undef
 	$always_use_nv			= false
 	$always_use_rocm		= false
 	$root_default_capabilities	= 'full'

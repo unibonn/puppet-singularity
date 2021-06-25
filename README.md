@@ -112,6 +112,19 @@ Only allow containers to be used that are owned by groups in given array. (defau
 ##### `limit_container_paths`
 Only allow containers to be used that are located within the given path prefix array. (default: undef)
 
+##### `allow_container_squashfs`, `allow_container_extfs`, `allow_container_dir`, `allow_container_encrypted`
+Limits which kinds of containers users may use, does not apply to `root`. (default: yes)
+
+##### `allow_net_users`
+Allow specified root administered CNI network configurations to be used by the specified list of users. This feature only applies when Singularity is running in SUID mode and the user is non-root. (default: undef)
+
+##### `allow_net_groups`
+Allow specified root administered CNI network configurations to be used by the specified list of groups. This feature only applies when Singularity is running in SUID mode and the user is non-root. (default: undef)
+
+##### `allow_net_networks`
+Specify the names of CNI network configurations that may be used by users and groups listed in the `allow_net_users` / `allow_net_groups` directives.
+This feature only applies when Singularity is running in SUID mode and the user is non-root. (default: undef)
+
 ##### `always_use_nv`
 Always pass `--nv` option to Singularity implicitly.
 

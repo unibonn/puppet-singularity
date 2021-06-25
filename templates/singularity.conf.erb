@@ -302,6 +302,49 @@ allow container encrypted = yes
 allow container encrypted = no
 <% end -%>
 
+# ALLOW NET USERS: [STRING]
+# DEFAULT: NULL
+# Allow specified root administered CNI network configurations to be used by the
+# specified list of users. By default only root may use CNI configuration,
+# except in the case of a fakeroot execution where only 40_fakeroot.conflist
+# is used. This feature only applies when Singularity is running in
+# SUID mode and the user is non-root.
+<% allow_net_users = scope.lookupvar('::singularity::allow_net_users') -%>
+<% if allow_net_users -%>
+allow net users = <%= allow_net_users.join(', ') %>
+<% else -%>
+#allow net users = gmk, singularity
+<% end -%>
+
+
+# ALLOW NET GROUPS: [STRING]
+# DEFAULT: NULL
+# Allow specified root administered CNI network configurations to be used by the
+# specified list of users. By default only root may use CNI configuration,
+# except in the case of a fakeroot execution where only 40_fakeroot.conflist
+# is used. This feature only applies when Singularity is running in
+# SUID mode and the user is non-root.
+<% allow_net_groups = scope.lookupvar('::singularity::allow_net_groups') -%>
+<% if allow_net_groups -%>
+allow net groups = <%= allow_net_groups.join(', ') %>
+<% else -%>
+#allow net groups = group1, singularity
+<% end -%>
+
+
+# ALLOW NET NETWORKS: [STRING]
+# DEFAULT: NULL
+# Specify the names of CNI network configurations that may be used by users and
+# groups listed in the allow net users / allow net groups directives. Thus feature
+# only applies when Singularity is running in SUID mode and the user is non-root.
+<% allow_net_networks = scope.lookupvar('::singularity::allow_net_networks') -%>
+<% if allow_net_networks -%>
+allow net networks = <%= allow_net_networks.join(', ') %>
+<% else -%>
+#allow net networks = bridge
+<% end -%>
+
+
 # ALWAYS USE NV ${TYPE}: [BOOL]
 # DEFAULT: no
 # This feature allows an administrator to determine that every action command
