@@ -420,7 +420,7 @@ mksquashfs path = <%= mksquashfs_path %>
 # to use when building an image.  The fewer processors the longer it takes.
 # To enable it to use all available CPU's set this to 0.
 # mksquashfs procs = 0
-mksquashfs procs = <%= scope.lookupvar('::singularity::mksquashfs_procs') -%>
+mksquashfs procs = <%= scope.lookupvar('::singularity::mksquashfs_procs') %>
 
 # MKSQUASHFS MEM: [STRING]
 # DEFAULT: Unlimited
@@ -467,4 +467,4 @@ shared loop devices = no
 # overlay mounts.
 # If the driver name specified has not been registered via a plugin installation
 # the run-time will abort.
-image driver = <%= scope.lookupvar('::singularity::image_driver') -%>
+image driver = <%= scope.lookupvar('::singularity::image_driver') %>
