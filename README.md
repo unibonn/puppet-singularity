@@ -1,5 +1,13 @@
 # singularity
 
+## Warning: This module has been ARCHIVED
+
+As this module has not seen updates in a while and the original `singularity` package has been discontinued, this module will be archived. 
+
+There is also a good successor available at this time:
+[Puppet Module Apptainer](https://github.com/treydock/puppet-module-apptainer) which is well-maintained. 
+
+
 #### Table of Contents
 
 1. [Description](#description)
